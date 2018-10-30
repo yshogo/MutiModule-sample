@@ -4,7 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
@@ -18,7 +19,7 @@ class MainViewModel : ViewModel() {
 
         val repository = MainRepository().getUserInfo()
 
-        launch {
+        GlobalScope.launch {
             val request = repository.getUser()
             val response = request.await()
             if (response.isSuccessful) {
