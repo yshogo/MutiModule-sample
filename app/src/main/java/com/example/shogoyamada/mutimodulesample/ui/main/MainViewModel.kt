@@ -1,5 +1,7 @@
 package com.example.shogoyamada.mutimodulesample.ui.main
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
 import kotlinx.coroutines.experimental.launch
@@ -7,6 +9,10 @@ import kotlinx.coroutines.experimental.launch
 class MainViewModel : ViewModel() {
 
     var userModel = ObservableField<Main>()
+
+    private val _navgationTestPage = MutableLiveData<String>()
+    val navigationTestPage: LiveData<String>
+        get() = _navgationTestPage
 
     fun getUserInfo() {
 
@@ -22,5 +28,10 @@ class MainViewModel : ViewModel() {
                 print(response.errorBody().toString())
             }
         }
+    }
+
+
+    fun onTapButton() {
+        _navgationTestPage.value = "test"
     }
 }

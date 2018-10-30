@@ -1,11 +1,13 @@
 package com.example.shogoyamada.mutimodulesample.ui.main
 
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.shogoyamada.mutimodulesample.Test.TestActivity
 import com.example.shogoyamada.mutimodulesample.databinding.MainFragmentBinding
 
 class MainFragment : Fragment() {
@@ -23,6 +25,10 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         binding = MainFragmentBinding.inflate(inflater, container, false).apply {
             viewModel = this@MainFragment.viewModel
+        }
+
+        viewModel.navigationTestPage.observeForever {
+            startActivity(Intent(requireContext(), TestActivity::class.java))
         }
 
         return binding.root
