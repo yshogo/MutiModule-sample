@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.shogoyamada.mutimodulesample.Test.TestActivity
 import com.example.shogoyamada.mutimodulesample.databinding.MainFragmentBinding
+import org.koin.android.architecture.ext.viewModel
 
 class MainFragment : Fragment() {
 
@@ -16,13 +17,14 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-    private lateinit var viewModel: MainViewModel
+//    private var viewModel by viewModel<MainViewModel>()
+    private val viewModel by viewModel<MainViewModel>()
     private lateinit var binding: MainFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+//        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         binding = MainFragmentBinding.inflate(inflater, container, false).apply {
             viewModel = this@MainFragment.viewModel
         }

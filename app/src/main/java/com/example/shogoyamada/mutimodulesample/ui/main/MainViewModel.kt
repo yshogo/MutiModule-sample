@@ -7,7 +7,7 @@ import android.databinding.ObservableField
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val repository: MainRepository) : ViewModel() {
 
     var userModel = ObservableField<Main>()
     var contentModel = ObservableField<Content>()
@@ -18,13 +18,13 @@ class MainViewModel : ViewModel() {
 
     fun getUserInfo() {
 
-        val repository = MainRepository().getUserInfo()
+        val info = repository.getUserInfo()
 
         GlobalScope.launch {
-            val userRequest = repository.getUser()
+            val userRequest = info.getUser()
             val userResponse = userRequest.await()
 
-            val contentRequest = repository.getContent()
+            val contentRequest = info.getContent()
             val contentResponse = contentRequest.await()
 
             if (!userResponse.isSuccessful || !contentResponse.isSuccessful) {
