@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 class MainViewModel : ViewModel() {
 
     var userModel = ObservableField<Main>()
+    var contentModel = ObservableField<Content>()
 
     private val _navgationTestPage = MutableLiveData<String>()
     val navigationTestPage: LiveData<String>
@@ -20,14 +21,19 @@ class MainViewModel : ViewModel() {
         val repository = MainRepository().getUserInfo()
 
         GlobalScope.launch {
-            val request = repository.getUser()
-            val response = request.await()
-            if (response.isSuccessful) {
-                val model = response.body() ?: return@launch
-                userModel.set(model)
-            } else {
-                print(response.errorBody().toString())
+            val userRequest = repository.getUser()
+            val userResponse = userRequest.await()
+
+            val contentRequest = repository.getContent()
+            val contentResponse = contentRequest.await()
+
+            if (!userResponse.isSuccessful || !contentResponse.isSuccessful) {
+                // TODO たぶんここでキャンセル処理を実行しないといけない
+                return@launch
             }
+
+            userModel.set(userResponse.body() ?: return@launch)
+            contentModel.set(contentResponse.body() ?: return@launch)
         }
     }
 
