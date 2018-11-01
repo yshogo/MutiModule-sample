@@ -1,5 +1,7 @@
-package com.example.shogoyamada.mutimodulesample.ui.main
+package com.example.repository
 
+import com.example.shogoyamada.mutimodulesample.ui.main.Content
+import com.example.shogoyamada.mutimodulesample.ui.main.Main
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.Response

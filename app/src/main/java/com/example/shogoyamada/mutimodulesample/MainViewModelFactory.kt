@@ -2,7 +2,7 @@ package com.example.shogoyamada.mutimodulesample
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
-import com.example.shogoyamada.mutimodulesample.ui.main.MainRepository
+import com.example.repository.MainRepository
 import com.example.shogoyamada.mutimodulesample.ui.main.MainViewModel
 
 

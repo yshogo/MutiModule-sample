@@ -1,7 +1,7 @@
 package com.example.shogoyamada.mutimodulesample
 
 import android.app.Application
-import com.example.shogoyamada.mutimodulesample.ui.main.MainRepository
+import com.example.repository.MainRepository
 import com.example.shogoyamada.mutimodulesample.ui.main.MainViewModel
 import org.koin.android.architecture.ext.viewModel
 import org.koin.android.ext.android.startKoin
