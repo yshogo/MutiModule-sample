@@ -1,5 +1,6 @@
 package com.example.shogoyamada.mutimodulesample.ui.main
 
+import android.app.AlertDialog
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
@@ -17,14 +18,12 @@ class MainFragment : Fragment() {
         fun newInstance() = MainFragment()
     }
 
-//    private var viewModel by viewModel<MainViewModel>()
     private val viewModel by viewModel<MainViewModel>()
     private lateinit var binding: MainFragmentBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
 
-//        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         binding = MainFragmentBinding.inflate(inflater, container, false).apply {
             viewModel = this@MainFragment.viewModel
         }
@@ -33,11 +32,26 @@ class MainFragment : Fragment() {
             startActivity(Intent(requireContext(), TestActivity::class.java))
         }
 
+        viewModel.errorDialog.observeForever {
+            it ?: return@observeForever
+            showErrorDialog(it)
+        }
+
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         viewModel.getUserInfo()
+    }
+
+    private fun showErrorDialog(errorBody: ErrorBody) {
+        AlertDialog.Builder(requireContext())
+                .setTitle("エラー")
+                .setMessage("mainErrorMessage: ${errorBody.mainErrorBody.toString()} contentErrorMessage: ${errorBody.contentErrorBody.toString()}")
+                .setPositiveButton("OK", null).show()
+
+        print(errorBody.mainErrorBody)
+        print(errorBody.contentErrorBody)
     }
 }
