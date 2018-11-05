@@ -1,7 +1,6 @@
 package com.example.shogoyamada.mutimodulesample.ui.main
 
 import android.app.AlertDialog
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -42,7 +41,7 @@ class MainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getUserInfo()
+        viewModel.getUserInfoSetTimeout()
     }
 
     private fun showErrorDialog(errorBody: ErrorBody) {

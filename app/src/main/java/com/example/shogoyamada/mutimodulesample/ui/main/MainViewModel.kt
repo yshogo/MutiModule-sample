@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
 import com.example.repository.MainRepository
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
@@ -22,15 +23,15 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
     val errorDialog: LiveData<ErrorBody>
         get() = _errorDialog
 
-    fun getUserInfo() {
+    fun getUserInfoCatchError() {
 
         val info = repository.getUserInfo()
 
         GlobalScope.launch {
-            val userRequest = info.getUser()
-            val userResponse = userRequest.await()
 
+            val userRequest = info.getUser()
             val contentRequest = info.getContent()
+            val userResponse = userRequest.await()
             val contentResponse = contentRequest.await()
 
             if (!userResponse.isSuccessful || !contentResponse.isSuccessful) {
@@ -50,8 +51,43 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
         }
     }
 
+    fun getUserInfoSetTimeout() {
+        val info = repository.getUserInfo()
+        GlobalScope.launch {
+            withTimeout(300) {
 
-    fun onTapButton() {
-        _navgationTestPage.value = "test"
+                try {
+                    val userRequest = info.getUser()
+                    val contentRequest = info.getContent()
+                    val userResponse = userRequest.await()
+                    val contentResponse = contentRequest.await()
+
+                    if (!userResponse.isSuccessful || !contentResponse.isSuccessful) {
+
+                        _errorDialog.postValue(ErrorBody().apply {
+                            mainErrorBody = userResponse.errorBody()
+                            mainErrorMessage = userResponse.message()
+
+                            contentErrorMessage = contentResponse.message()
+                            contentErrorBody = contentResponse.errorBody()
+                        })
+                        return@withTimeout
+                    }
+
+                    userModel.set(userResponse.body() ?: return@withTimeout)
+                    contentModel.set(contentResponse.body() ?: return@withTimeout)
+                }catch (e: TimeoutCancellationException) {
+                    // エラーをキャッチする
+                    print(e)
+                }
+            }
+        }
+    }
+
+    fun getUserInfo_retry() {
+
+        GlobalScope.launch {
+
+        }
     }
 }
