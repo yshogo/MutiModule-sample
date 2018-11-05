@@ -5,10 +5,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.databinding.ObservableField
 import com.example.repository.MainRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.*
+import java.io.IOException
+import java.lang.Exception
 
 class MainViewModel(private val repository: MainRepository) : ViewModel() {
 
@@ -76,7 +75,7 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
 
                     userModel.set(userResponse.body() ?: return@withTimeout)
                     contentModel.set(contentResponse.body() ?: return@withTimeout)
-                }catch (e: TimeoutCancellationException) {
+                } catch (e: TimeoutCancellationException) {
                     // エラーをキャッチする
                     print(e)
                 }
@@ -84,10 +83,48 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
         }
     }
 
-    fun getUserInfo_retry() {
+    fun getUserInfoRetry() {
+
+        val info = repository.getUserInfo()
 
         GlobalScope.launch {
+            retryIO(times = 2) {
+                try {
+                    val userRequest = info.getUser()
+                    val userResponse = userRequest.await()
 
+                    if (userResponse.isSuccessful) {
+                        userModel.set(userResponse.body() ?: return@retryIO)
+                    }
+
+                }catch (e: Exception) {
+
+                    print(e)
+                }
+            }
         }
+    }
+
+    suspend fun <T> retryIO(
+            times: Int = Int.MAX_VALUE,
+            initialDelay: Long = 100, // 0.1 second
+            maxDelay: Long = 1000,    // 1 second
+            factor: Double = 2.0,
+            block: suspend () -> T): T {
+
+        var currentDelay = initialDelay
+        repeat(times - 1) {
+            try {
+                return block()
+            } catch (e: IOException) {
+                // ここでリトライするかどうか判定する
+                // 例えば、ネットワークタイムアウトだったらリトライ、エラーコードが
+                // 返ってきてたらエラーのするとか
+                block()
+            }
+            delay(currentDelay)
+            currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelay)
+        }
+        return block() // last attempt
     }
 }

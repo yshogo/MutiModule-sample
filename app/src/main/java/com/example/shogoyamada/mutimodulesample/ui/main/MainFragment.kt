@@ -41,7 +41,7 @@ class MainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getUserInfoSetTimeout()
+        viewModel.getUserInfoRetry()
     }
 
     private fun showErrorDialog(errorBody: ErrorBody) {
