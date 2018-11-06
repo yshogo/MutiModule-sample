@@ -50,9 +50,42 @@ class MainViewModel(private val repository: MainRepository) : ViewModel() {
         }
     }
 
+    fun getUserInfoEach() {
+
+        val info = repository.getUserInfo()
+
+        GlobalScope.launch {
+
+            val job = launch {
+                val userRequest = info.getUser()
+                val contentRequest = info.getContent()
+                val userResponse = userRequest.await()
+                val contentResponse = contentRequest.await()
+
+//            if (!userResponse.isSuccessful || !contentResponse.isSuccessful) {
+//
+//                _errorDialog.postValue(ErrorBody().apply {
+//                    mainErrorBody = userResponse.errorBody()
+//                    mainErrorMessage = userResponse.message()
+//
+//                    contentErrorMessage = contentResponse.message()
+//                    contentErrorBody = contentResponse.errorBody()
+//                })
+//                return@launch
+//            }
+
+                joinAll(userRequest, contentRequest)
+                userModel.set(userResponse.body() ?: return@launch)
+                contentModel.set(contentResponse.body() ?: return@launch)
+            }
+
+            job.join()
+        }
+    }
+
     fun getUserInfoSetTimeout() {
         val info = repository.getUserInfo()
-        GlobalScope.launch {
+        val job = GlobalScope.launch {
             withTimeout(300) {
 
                 try {

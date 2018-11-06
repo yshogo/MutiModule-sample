@@ -36,12 +36,16 @@ class MainFragment : Fragment() {
             showErrorDialog(it)
         }
 
+        binding.button.setOnClickListener{
+            startActivity(Intent(requireContext(), TestActivity::class.java))
+        }
+
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.getUserInfoRetry()
+        viewModel.getUserInfoEach()
     }
 
     private fun showErrorDialog(errorBody: ErrorBody) {

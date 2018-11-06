@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    // アニメーション
+    <Transition
+        motion:constraintSetEnd="@id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+        <OnSwipe
+            motion:dragDirection="dragRight"
+            motion:touchAnchorId="@id/view_motion"
+            motion:touchAnchorSide="bottom" />
+    </Transition>
+
+    // 始まりのViewの状態
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@id/view_motion"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@color/colorAccent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+    </ConstraintSet>
+
+    // 終わりのViewの状態
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@id/view_motion"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:background="@color/colorAccent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+    </ConstraintSet>
+
+</MotionScene>

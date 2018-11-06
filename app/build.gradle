@@ -61,6 +61,9 @@ dependencies {
     // support design library
     implementation 'com.android.support:design:28.0.0'
 
+    // MotionLayout
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-alpha2'
+
     def koin_version = '0.9.3'
     implementation "org.koin:koin-core:$koin_version"
     implementation "org.koin:koin-android:$koin_version"
